@@ -123,6 +123,12 @@ ConvertDialog::ConvertDialog( QWindow *parent, qt_intf_t *_p_intf,
     deinterBox = new QCheckBox( qtr( "Deinterlace" ) );
     convertLayout->addWidget( deinterBox );
 
+    chaptersBox = new QCheckBox( qtr( "Split output at chapter boundaries" ) );
+    chaptersBox->setToolTip( qtr( "This writes each chapter (e.g. of a DVD) "
+                "to a separate file, named after the destination file with "
+                "a number appended." ) );
+    convertLayout->addWidget( chaptersBox );
+
     profile = new VLCProfileSelector( this );
     convertLayout->addWidget( profile );
 
@@ -223,23 +229,36 @@ void ConvertDialog::accept()
             }
 
             mrl.end();
-            SoutModule dstModule("std");
-            SoutModule file("file");
-            file.option("no-overwrite");
-            dstModule.option("access", file);
-            dstModule.option("mux", profile->getMux());
-            dstModule.option("dst", newFileName);
+            SoutModule stdModule("std");
+            SoutModule chaptersModule("chaptersplit");
+            SoutModule& destModule = chaptersBox->isChecked() ? chaptersModule
+                                                              : stdModule;
+
+            if( chaptersBox->isChecked() )
+            {
+                destModule.option("dst", newFileName);
+                if( profile->isEnabled() && !profile->getMux().isEmpty() )
+                    destModule.option("mux", profile->getMux());
+            }
+            else
+            {
+                SoutModule file("file");
+                file.option("no-overwrite");
+                destModule.option("access", file);
+                destModule.option("mux", profile->getMux());
+                destModule.option("dst", newFileName);
+            }
 
             if( displayBox->isChecked() )
             {
                 SoutModule duplicate("duplicate");
                 duplicate.option("dst", "display");
-                duplicate.option("dst", dstModule);
+                duplicate.option("dst", destModule);
                 mrl.module(duplicate);
             }
             else
             {
-                mrl.module(dstModule);
+                mrl.module(destModule);
             }
         }
         msg_Dbg( p_intf, "Transcode chain: %s", qtu( mrl.to_string() ) );

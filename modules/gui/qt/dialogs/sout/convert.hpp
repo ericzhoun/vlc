@@ -45,7 +45,7 @@ public:
 private:
     QLineEdit *fileLine;
 
-    QCheckBox *displayBox, *deinterBox, *appendBox;
+    QCheckBox *displayBox, *deinterBox, *appendBox, *chaptersBox;
     QRadioButton *dumpRadio;
     QPushButton *okButton;
     VLCProfileSelector *profile;

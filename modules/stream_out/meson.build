@@ -108,6 +108,14 @@ vlc_modules += {
     'plugin_dir' : 'stream_out',
 }
 
+# chaptersplit
+vlc_modules += {
+    'name' : 'stream_out_chaptersplit',
+    'sources' : files('chaptersplit.c'),
+    'shortname' : 's_o_chap',
+    'plugin_dir' : 'stream_out',
+}
+
 # smem
 vlc_modules += {
     'name' : 'stream_out_smem',

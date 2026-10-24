@@ -2665,15 +2665,30 @@ static int UpdateTitleSeekpointFromDemux( input_thread_t *p_input )
     demux_t *p_demux = input_priv(p_input)->master->p_demux;
 
     /* TODO event-like */
+    bool b_chapter_changed = false;
     if( demux_TestAndClearFlags( p_demux, INPUT_UPDATE_TITLE ) )
+    {
         input_SendEventTitle( p_input, &(struct vlc_input_event_title) {
             .action = VLC_INPUT_TITLE_SELECTED,
             .selected_idx = demux_GetTitle( p_demux ),
         });
+        b_chapter_changed = true;
+    }
 
     if( demux_TestAndClearFlags( p_demux, INPUT_UPDATE_SEEKPOINT ) )
+    {
         input_SendEventSeekpoint( p_input, demux_GetTitle( p_demux ),
                                   demux_GetSeekpoint( p_demux ) );
+        b_chapter_changed = true;
+    }
+
+    /* Notify the stream output chain of natural chapter transitions so that
+     * stream output modules can split the output at chapter boundaries. */
+    if( b_chapter_changed && input_priv(p_input)->p_sout != NULL )
+        sout_StreamControl( input_priv(p_input)->p_sout,
+                            SOUT_STREAM_CHAPTER_CHANGE,
+                            demux_GetTitle( p_demux ),
+                            demux_GetSeekpoint( p_demux ) );
 
     return UpdateTitleSeekpoint( p_input,
                                  demux_GetTitle( p_demux ),

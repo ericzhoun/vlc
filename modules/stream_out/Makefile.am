@@ -24,6 +24,7 @@ libstream_out_bridge_plugin_la_SOURCES = stream_out/bridge.c
 libstream_out_mosaic_bridge_plugin_la_SOURCES = stream_out/mosaic_bridge.c
 libstream_out_autodel_plugin_la_SOURCES = stream_out/autodel.c
 libstream_out_record_plugin_la_SOURCES = stream_out/record.c
+libstream_out_chaptersplit_plugin_la_SOURCES = stream_out/chaptersplit.c
 libstream_out_smem_plugin_la_SOURCES = stream_out/smem.c
 libstream_out_setid_plugin_la_SOURCES = stream_out/setid.c
 libstream_out_trace_plugin_la_SOURCES = stream_out/trace.c
@@ -68,6 +69,7 @@ sout_PLUGINS += \
 	libstream_out_mosaic_bridge_plugin.la \
 	libstream_out_autodel_plugin.la \
 	libstream_out_record_plugin.la \
+	libstream_out_chaptersplit_plugin.la \
 	libstream_out_smem_plugin.la \
 	libstream_out_setid_plugin.la \
 	libstream_out_trace_plugin.la \

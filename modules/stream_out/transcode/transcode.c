@@ -373,6 +373,13 @@ static int Control( sout_stream_t *p_stream, int i_query, va_list args )
         {
             return sout_StreamControl(p_stream->p_next, i_query, va_arg(args, bool *));
         }
+        case SOUT_STREAM_CHAPTER_CHANGE:
+        {
+            int i_title = va_arg(args, int);
+            int i_seekpoint = va_arg(args, int);
+            return sout_StreamControl( p_stream->p_next, i_query,
+                                       i_title, i_seekpoint );
+        }
     }
     return VLC_EGENERIC;
 }

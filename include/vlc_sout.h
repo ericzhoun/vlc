@@ -223,6 +223,22 @@ enum sout_stream_query_e
      * \endcode
      */
     SOUT_STREAM_IS_SYNCHRONOUS,
+
+    /**
+     * Notify that the input naturally transitioned to a new chapter (or
+     * title) of the media being read, e.g. a DVD chapter boundary. This
+     * control should fail and do nothing if not implemented. Stream output
+     * modules can use it to split the output into one file per chapter.
+     *
+     * \param int New title index.
+     * \param int New seekpoint (chapter) index within the title.
+     *
+     * Usage:
+     * \code{c}
+     * sout_StreamControl(stream, SOUT_STREAM_CHAPTER_CHANGE, i_title, i_seekpoint);
+     * \endcode
+     */
+    SOUT_STREAM_CHAPTER_CHANGE,
 };
 
 typedef struct vlc_frame_t vlc_frame_t;
